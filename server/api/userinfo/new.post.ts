@@ -20,7 +20,7 @@ export default defineEventHandler(async(event)=>{
     const userinfo = await prisma.userInfo.create({
         data:{
             name: body.name,
-            thName: body.enName,
+            thName: body.thName,
             tagId: body.tagId,
         }
     })

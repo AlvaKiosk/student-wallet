@@ -19,6 +19,8 @@ export default defineEventHandler(async(event)=>{
 
     const userInfo = await prisma.userInfo.update({
         where:{tagId: body.tagId},
-        data:{credit: body.credits}
+        data:{credit: body.credit}
     })
+
+    return userInfo
 })
