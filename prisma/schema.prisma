@@ -1,0 +1,161 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+
+model users{
+    id              String          @id @default(auto()) @map("_id") @db.ObjectId 
+    uuid            String          @unique(map: "uuid")
+    email           String          @unique(map: "email")
+    password        String           
+    avatar          String?
+    thName          String
+    enName          String
+    status          String
+    role            Role             @default(STUDENT)
+    tagId           String
+    tagStatus       String
+    credit          Int
+    point           Int
+    created_at      DateTime         @db.Date @default(now())
+    deleted_at      DateTime?        @db.Date
+    updated_at      DateTime?        @db.Date    
+}
+
+model userInfo{
+    id              String          @id @default(auto()) @map("_id") @db.ObjectId
+    name            String
+    thName          String
+    status          String          @default("1")
+    credit          Int             @default(0)
+    point           Int             @default(0)
+    tagId           String          @unique(map: "tagId")
+    tagStatus       String          @default("1")
+    created_at      DateTime         @db.Date @default(now())
+    updated_at      DateTime?        @db.Date @default(now()) 
+}
+
+enum Role{
+  SUPER_ADMIN
+  ADMIN
+  STAFF
+  STUDENT
+}
+
+model Assets {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  assetCode     String        @unique(map: "assetCode")
+  assetName     String?       
+  assetStatus   AssetStatus   @default(OFFLINE)
+  maeManeeQR    MaeManeeQR[]
+  transaction   Transactions[]
+  createdAt     DateTime      @db.Date @default(now())
+  updatedAt     DateTime?     @updatedAt       
+}
+
+enum AssetStatus {
+  READY
+  QUEUE
+  BUSY
+  OFFLINE
+}
+
+model MaeManeeShop{
+  id                                String      @id @default(auto()) @map("_id") @db.ObjectId
+  billerID                          String
+  reference1                        String      //Reference1  is MaeManeeShopCode
+  terminalID                        String
+  createdAt                         DateTime    @db.Date @default(now())
+  updated_at                        DateTime?   @db.Date
+}
+
+model MaeManeeQR {
+  id                                String      @id @default(auto()) @map("_id") @db.ObjectId
+  qrgenID                           String      @unique //10 digits
+  billerID                          String
+  ref1                              String
+  ref2                              String      // assetCode+qrgenID
+  terminalID                        String
+  amount                            String
+  qrText                            String
+  asset                             Assets?     @relation(fields:[assetCode], references:[assetCode], onDelete:SetNull, onUpdate:Cascade)
+  assetCode                         String?     // 10 digits
+  transaction                       Transactions?
+  createdAt                         DateTime    @db.Date @default(now())
+}
+
+model Transactions{
+  id                                String            @id @default(auto()) @map("_id") @db.ObjectId 
+  asset                             Assets?           @relation(fields:[assetCode], references:[assetCode], onDelete:SetNull, onUpdate:Cascade)
+  assetCode                         String?         
+  walletCode                        String?
+  maemaneeQR                        MaeManeeQR?       @relation(fields:[QrgenID], references:[qrgenID], onDelete:SetNull, onUpdate:Cascade)
+  QrgenID                           String?           @unique //QrgenID
+  amount                            String
+  paymentBy                         String            //QR30, SlipOK, EasySlip, Coin, SMSNotify   
+  transRef                          String  
+  transDate                         String
+  transTime                         String
+  status                            String            //COMPLETE  REFUND  
+  slipDetail                        SlipDetails?      
+  createAt                          DateTime          @db.Date @default(now())
+}
+
+model SlipDetails{
+  id                                String        @id @default(auto()) @map("_id") @db.ObjectId
+  success                           String
+  message                           String?
+  transRef                          String 
+  transDate                         String  
+  transTime                         String 
+  sender                            Sender
+  receiver                          Receiver
+  amount                            String
+  paidLocalAmount                   String
+  paidLocalCurrency                 String
+  countryCode                       String
+  ref1                              String
+  ref2                              String  
+  ref3                              String?
+  qrText                            String
+  transFee                          String?
+  transaction                       Transactions?  @relation(fields: [transactionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  transactionId                     String?       @db.ObjectId @unique
+}
+
+type Name{
+  thName  String?
+  enName  String?
+}
+type Bank {
+  bankCode      String?
+  bankName      Name? 
+}
+
+type Proxy{
+  type     String?       
+  value    String?
+}
+
+type Account{
+  name     Name
+  type     String?
+  value    String?
+}
+
+type Sender{
+  bank         Bank
+  account      Account
+  proxy        Proxy
+}
+
+type Receiver{
+  bank         Bank
+  account      Account
+  proxy        Proxy
+}
