@@ -10,5 +10,5 @@ export default defineEventHandler( async(event)=>{
 
     console.log(body)
     
-    return "Hello linebot"
+    return body
 })
