@@ -8,9 +8,10 @@ const prisma = new PrismaClient();
 export default defineEventHandler( async(event)=>{
     const body = await readBody(event)
 
-    console.log(body.events[0])
-    console.log(body.events[0].source)
-    console.log(body.events[0].message)
+    console.log(body)
+    console.log(body.events)
+    // console.log(body.events[0].source)
+    // console.log(body.events[0].message)
     
-    return body
+    return "hello"
 })
