@@ -51,7 +51,7 @@ model Assets {
   id            String        @id @default(auto()) @map("_id") @db.ObjectId
   assetCode     String        @unique(map: "assetCode")
   assetName     String?       
-  assetStatus   AssetStatus   @default(OFFLINE)
+  assetStatus   AssetStatus   @default(REGISTERED)
   maeManeeQR    MaeManeeQR[]
   transaction   Transactions[]
   createdAt     DateTime      @db.Date @default(now())
@@ -63,6 +63,7 @@ enum AssetStatus {
   QUEUE
   BUSY
   OFFLINE
+  REGISTERED
 }
 
 model MaeManeeShop{

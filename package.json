@@ -15,7 +15,8 @@
     "nuxt-quasar-ui": "^2.0.6",
     "sass": "^1.69.5",
     "vue": "^3.3.8",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "@types/debug": "^4.1.8"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.5.1",

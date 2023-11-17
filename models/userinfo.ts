@@ -1,4 +1,3 @@
-import { join } from '@prisma/client/runtime/library'
 import Joi from 'joi'
 
 export async function validateNewUserInfo(body:any){
@@ -14,6 +13,14 @@ export async function validateAddCredit(body:any){
     const schema = Joi.object({
         tagId: Joi.string().required(),
         credit: Joi.number().required()
+    })
+    return schema.validate(body)
+}
+
+export async function validateAddPoint(body:any){
+    const schema = Joi.object({
+        tagId: Joi.string().required(),
+        point: Joi.number().required()
     })
     return schema.validate(body)
 }
